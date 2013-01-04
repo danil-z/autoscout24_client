@@ -52,7 +52,7 @@ if you use rails you may place this code into **config/initializers/autoscout24.
 
 ### via yaml file:
 
-      Autoscout24Client.configure("config/autoscout24.yml")
+      Autoscout24Client.configure_with("config/autoscout24.yml")
 
 ## Usage
 
