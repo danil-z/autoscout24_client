@@ -1,0 +1,6 @@
+username: "yaml_username"
+ password: "yaml_password"
+ culture_id: "de-DE"
+  default_search_params:
+  show_with_images_only: "False"
+  show_private_vehicles: "False"
