@@ -33,9 +33,9 @@ module Autoscout24Client
     begin
       config = YAML::load(IO.read(path_to_yaml_file))
     rescue Errno::ENOENT
-      logger.warn("YAML configuration file couldn't be found. Using defaults.") unless ENV["RAILS_ENV"] == "test"; return
+      logger.warn("YAML configuration file couldn't be found. Using defaults.") unless ENV['CI']; return
     rescue Psych::SyntaxError
-      logger.warn("YAML configuration file contains invalid syntax. Using defaults.") unless ENV["RAILS_ENV"] == "test"; return
+      logger.warn("YAML configuration file contains invalid syntax. Using defaults.") unless ENV['CI']; return
     end
 
     configure(config)

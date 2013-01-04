@@ -57,7 +57,6 @@ module Autoscout24Client
                 raise
             end
         }
-
       end
 
 
