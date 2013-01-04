@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in autoscout24.gemspec
+# Specify your gem's dependencies in autoscout24_client.gemspec
 gemspec
 
 group :test do
