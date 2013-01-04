@@ -4,7 +4,7 @@ unless ENV['CI']
 end
 
 
-require File.expand_path("../../lib/autoscout24", __FILE__)
+require File.expand_path("../../lib/autoscout24_client", __FILE__)
 require "minitest/autorun"
 
 require 'webmock/minitest'
