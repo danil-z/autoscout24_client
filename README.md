@@ -1,5 +1,7 @@
 # autoscout24_client
 
+[![Build Status](https://travis-ci.org/blackbumer/autoscout24_client.png)](https://travis-ci.org/blackbumer/autoscout24_client)
+
 REST api client. It uses 4.1.1 REST API version.
 More information about API could be found at
 [www.developergarden.com](http://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_4_1)
