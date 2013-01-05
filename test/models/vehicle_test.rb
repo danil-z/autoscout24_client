@@ -28,7 +28,7 @@ describe Autoscout24Client::Vehicle do
       attrs.each_with_index do |attr,i|
         vehicle = Autoscout24Client::Vehicle.new(attrs_keys[i] => "Unknown")
         Autoscout24Client::Vehicle.stub attr.pluralize.to_sym, [{"id" => "M", "text" => "Wrong"},{"id" => "X", "text" => "Name of attr"}] do
-          proc {vehicle.send(attr.to_sym)}.must_raise NoMethodError
+          vehicle.send(attr.to_sym).must_be_nil
         end
       end
     end

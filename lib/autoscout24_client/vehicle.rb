@@ -21,28 +21,27 @@ module Autoscout24Client
       @source = node
     end
 
-    # TODO: refactor this 3 methods into 1
-
-    # @return [String] name of fuel_type
-    def fuel
-      @fuel ||= self.class.fuels.find{|fuels| fuels["id"]==source["fuel_type_id"]}["text"] if source["fuel_type_id"]
-    end
-
-    # @return [String] name of gear_type
+    ## @return [String] name of gear_type
     def gear_type
-      @gear_type ||= self.class.gear_types.find{|gears| gears["id"]==source["gear_type_id"]}["text"] if source["gear_type_id"]
+      @gear_type ||= generic_finder :gear_types, "gear_type_id"
     end
 
-    # @return [String] name of brand like BMW, Audi and etc
+    ## @return [String] name of brand
     def brand
-      @brand ||= self.class.brands.find{|node| node["id"]==source["brand_id"].to_s}["text"] if source['brand_id']
+      @brand ||= generic_finder :brands, "brand_id"
     end
 
-    # seems we have this value in response
-    ## @return [String] name of body_color
-    #def body_color
-    #  @body_color ||= self.class.body_colors.find{|body_color| body_color["id"]==source["body_colorgroup_id"]}["text"] if source['body_colorgroup_id']
-    #end
+    ## @return [String] name of fuel_type
+    def fuel
+      @fuel ||= generic_finder :fuels, "fuel_type_id"
+    end
+
+    def generic_finder(collection, primary_key)
+      self.class.send(collection).each do |object|
+        return object["text"] if object["id"] == source[primary_key]
+      end if source[primary_key]
+      nil
+    end
 
     # shortcuts for simple data
     %w(mileage accident_free body_color kilowatt).each do |meth|
