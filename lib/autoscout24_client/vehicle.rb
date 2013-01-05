@@ -38,36 +38,33 @@ module Autoscout24Client
 
     def generic_finder(collection, primary_key)
       self.class.send(collection).each do |object|
-        return object["text"] if object["id"] == source[primary_key]
+        return object["text"] if object["id"].to_s == source[primary_key].to_s
       end if source[primary_key]
       nil
     end
 
-    # shortcuts for simple data
-    %w(mileage accident_free body_color kilowatt).each do |meth|
-      define_method(meth){source[meth]}
+#    def method_missing(meth, *args, &block)
+    def method_missing(meth)
+      keys = meth.id2name.split("_")
+      keys.count>1 ? nested_hash_values(keys).compact : nested_hash_value(keys[0])
     end
 
     #  hash helpers
     ## TODO: move this to external file
-    ## recursively search hash for key value match
-    #def self.dfs(hsh, &blk)
-    #  return enum_for(:dfs, hsh) unless blk
-    #
-    #  yield hsh
-    #  hsh.each do |k,v|
-    #    if v.is_a? Array
-    #      v.each do |elm|
-    #        dfs(elm, &blk)
-    #      end
-    #    end
-    #  end
-    #end
-    #
-    #def self.find_by_key(hsh, key, search_for)
-    #  dfs(hsh).find {|node| node[key] == search_for }
-    #end
-    #
+    def nested_hash_value(key, obj = source)
+      if obj.respond_to?(:key?) && obj.key?(key)
+        obj[key]
+      elsif obj.respond_to?(:each)
+        r = nil
+        obj.find{ |*a| r=nested_hash_value(key, a.last) }
+        r
+      end
+    end
+
+    def nested_hash_values(keys, obj = source)
+      normalized_keys = keys.kind_of?(String) ? keys.split(",") :keys
+      normalized_keys.map{|k| nested_hash_value(k,obj)}
+    end
 
   end
 end

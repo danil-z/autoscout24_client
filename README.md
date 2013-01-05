@@ -1,6 +1,6 @@
 # autoscout24_client
 
-[![Build Status](https://travis-ci.org/blackbumer/autoscout24_client.png)](https://travis-ci.org/blackbumer/autoscout24_client) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/blackbumer/autoscout24_client)
+[![Build Status](https://travis-ci.org/blackbumer/autoscout24_client.png?branch=master)](https://travis-ci.org/blackbumer/autoscout24_client) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/blackbumer/autoscout24_client)
 
 REST api client. It uses 4.1.1 REST API version.
 More information about API could be found at

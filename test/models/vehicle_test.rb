@@ -34,15 +34,19 @@ describe Autoscout24Client::Vehicle do
     end
 
   end
-  describe "shortcuts" do
-    let(:attrs) { %w(mileage accident_free body_color kilowatt) }
 
-    it "provides reader for standart attributes" do
-      attrs.each do |attr|
-        vehicle = Autoscout24Client::Vehicle.new(attr => 135)
-        vehicle.send(attr.to_sym).must_equal 135
-      end
+  describe ".method_missing" do
+  #  let(:attrs) { %w(mileage accident_free body_color kilowatt) }
+  #
+    it "searches in source method name key" do
+      vehicle = Autoscout24Client::Vehicle.new("mykey" => 135)
+      vehicle.send("mykey".to_sym).must_equal 135
     end
-
+    it "searches in source keys (method name splited by _)" do
+      vehicle = Autoscout24Client::Vehicle.new("mykey" => 135, owners: [{adress: {"zip" => "344000"}}])
+      vehicle.send("mykey_zip".to_sym).must_equal [135, "344000"]
+    end
   end
+  #
+
 end
