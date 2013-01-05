@@ -42,44 +42,27 @@ module Autoscout24Client
       # http://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_4_1/telekom-api-rest-4.1/html/as24_get_make_model_tree.html
       # @return [Hash]
       def fetch_make_model_tree
-        RestClient.post(
-            "#{Autoscout24Client::BASE_URL}/makeModelTree",
-            default_params, headers ) { |response, request, result, &block|
-            case response.code
-              when 200
-                JSON.parse(response)["response"]["stx3_idpool"]["nodes"]["node"]
-              when 401
-                if JSON.parse(response)["status"]["statusCode"] == "0040"
-                  reset_token
-                  fetch_make_model_tree
-                end
-              else
-                raise
-            end
-        }
+        fetch("makeModelTree","node")
       end
 
 
       # fetches LookUpData from autoscout24
-      # http://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_4_1/telekom-api-rest-4.1/html/as24_get_look_up_data.html
+      # http://www.developergarden.com/okumentation/Api_Doc_4_1/telekom-api-rest-4.1/html/as24_get_look_up_data.html
       # @return [Hash]
       def fetch_look_up_data
-        RestClient.post(
-            "#{Autoscout24Client::BASE_URL}/lookUpData",
-            default_params,headers) { |response, request, result, &block|
-            case response.code
-              when 200
-                JSON.parse(response)["response"]["stx3_idpool"]["elements"]["element"]
-              when 401
-                if JSON.parse(response)["status"]["statusCode"] == "0040"
-                  reset_token
-                  fetch_look_up_data
-                end
-              else
-                raise
-            end
-        }
-       end
+        fetch("lookUpData","element")
+      end
+
+      def fetch(path, node)
+        response = RestClient.post("#{Autoscout24Client::BASE_URL}/#{path}", default_params,headers) {|response, request, result| response }
+        begin
+          parsed_json = JSON.parse(response)
+          reset_token if parsed_json["status"]["statusCode"] == "0040"
+          parsed_json["response"]["stx3_idpool"][node.pluralize][node]
+        rescue
+          nil
+        end
+      end
     end
 
     def self.included(base)
