@@ -35,18 +35,19 @@ describe Autoscout24Client::Vehicle do
 
   end
 
-  describe ".method_missing" do
+  describe "#method_missing" do
     it "searches in source method name key" do
       vehicle = Autoscout24Client::Vehicle.new("mykey" => 135)
       vehicle.send("mykey".to_sym).must_equal 135
     end
-    it "searches in source keys (method name splited by _)" do
+    it "searches in source keys (method name splited by __)" do
       vehicle = Autoscout24Client::Vehicle.new("mykey" => 135, owners: [{adress: {"zip" => "344000"}}])
-      vehicle.send("mykey_zip".to_sym).must_equal [135, "344000"]
+      vehicle.send("mykey__zip".to_sym).must_equal [135, "344000"]
     end
   end
 
-  describe ".name" do
+
+  describe "#name" do
     let(:mod_tree){
       [
           {"name"=>"brand", "id"=>"15", "text"=>"Bugatti", "nodes"=>{"node"=>[{"name"=>"model", "id"=>"15677", "text"=>"EB 110"}, {"name"=>"model", "id"=>"18843", "text"=>"Veyron"}]}},
@@ -59,6 +60,41 @@ describe Autoscout24Client::Vehicle do
         vehicle.name.must_equal "Veyron"
       end
     end
+  end
+
+  describe "#vat_rate" do
+    it "returns vat rate in integer for country" do
+      vehicle = Autoscout24Client::Vehicle.new( price: { "vat_type_id"=> "True"}, "country" => "D")
+      vehicle.vat_rate.must_equal 19
+    end
+
+    it "value > 0  for known countries" do
+      countries = %w(A B BG CH D E F HR I L LT LV NL PL RO RUS S SK SLO TR UA)
+      countries.each do |country|
+        vehicle = Autoscout24Client::Vehicle.new( price: { "vat_type_id"=> "True"}, "country" => country)
+        vehicle.vat_rate.wont_be_same_as 0
+      end
+    end
+    it "0 for uknown country" do
+      vehicle = Autoscout24Client::Vehicle.new( price: { "vat_type_id"=> "True"}, "country" => "Unknown")
+      vehicle.vat_rate.must_equal 0
+    end
+    it "0 if vehicle doesn't include vat" do
+      vehicle = Autoscout24Client::Vehicle.new( price: { "vat_type_id"=> "False"}, "country" => "D")
+      vehicle.vat_rate.must_equal 0
+    end
+  end
+
+  describe "#netto" do
+    it "calculate netto if vat included" do
+      vehicle = Autoscout24Client::Vehicle.new( price: {"value" => 11900, "vat_type_id"=> "True"}, "country" => "D")
+      vehicle.netto.must_equal 10000
+    end
+    it "calculate netto if vat NOT included" do
+      vehicle = Autoscout24Client::Vehicle.new( price: {"value" => 11900, "vat_type_id"=> "False"}, "country" => "D")
+      vehicle.netto.must_equal 11900
+    end
+
   end
 
 

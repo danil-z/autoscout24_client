@@ -12,15 +12,12 @@ This gem is in very early development stage.
 
 Add this line to your application's Gemfile:
 
-    gem 'autoscout24'
+    gem 'autoscout24_client', :git => 'git@github.com:blackbumer/autoscout24_client.git'
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install autoscout24
 
 ## Configure
 
@@ -35,8 +32,7 @@ You may specify API username and password in shell variables:
 
 ### via hash:
 
-     Autoscout24Client.configure
-      ({
+     Autoscout24Client.configure({
          username: "your_username",
          password: "your_password",
          culture_id: "ru-RU",
@@ -56,7 +52,18 @@ if you use rails you may place this code into **config/initializers/autoscout24.
 
 ## Usage
 
-TODO: Write a usage example
+just fetch first vehicles from remote
+
+    Autoscout24Client::Vehicle.find
+
+fetch next page
+
+    Autoscout24Client::Vehicle.find(:page =>2)
+
+search by brand_id and model_id
+  Autoscout24Client::Vehicle.find(:brands =>{:brand_id => [13]}, :models => { :model_id=>[16888, 1320]})
+
+More information about supported params could be found at [www.developergarden.com](http://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_4_1/telekom-api-rest-4.1/html/as24__vehicle_search_parameters.html)
 
 ## Contributing
 

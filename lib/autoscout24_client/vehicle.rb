@@ -42,10 +42,39 @@ module Autoscout24Client
       @fuel ||= generic_finder :fuels, "fuel_type_id"
     end
 
-#    def method_missing(meth, *args, &block)
-    def method_missing(meth)
-      keys = meth.id2name.split("_")
+    def method_missing(meth, *args, &block)
+#    def method_missing(meth)
+      keys = meth.id2name.split("__")
       keys.count>1 ? nested_hash_values(keys).compact : nested_hash_value(keys[0])
+    end
+
+    # Vat Rate by country of location
+    # only D, I, B NL checked
+    # TODO: discover other country codes by autoscout24
+    # @return [Integer] VAT rate in % for country
+    def vat_rate
+      return 0 unless vat_type_id == "True"
+      case country.downcase
+        when *%w(hr); 27 #Hungary
+        when *%w(s); 25 #Sweden
+        when *%w(ro); 24 # Romania
+        when *%w(el ie pl pt fi); 23  # .. .. Poland
+        when *%w(b i lv lt); 21 # Belgium Italy Latvia Litva
+        when *%w(bg cz ee a si sk uk slo ua); 20 #Slovakia  Slovenia Ukraine
+        when *%w(d nl f); 19  #Germay Netherlands France
+        when *%w(e mt cy rus tr); 18 # Spain .. .. Russia
+        when *%w(l); 15 #Luxemburg
+        when *%w(ch); 8 #Switzerland
+
+        else 0
+      end
+    end
+
+    # Netto public price in EUR for vehicle
+    # @return [Integer] netto price
+    def netto
+      f_netto = value * 100 / (100 + vat_rate)
+      f_netto.round
     end
 
     private
